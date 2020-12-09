@@ -21,7 +21,7 @@ class _IndexCategoryDiscoverCartHomeState extends State<IndexCategoryDiscoverCar
   int _currentIndex = 0;//当前选择页面id
   Widget currentPage = null;//当前展示的页面
 
-  final List tabBodies = [
+  final List tabBodies = [//要跳转的页面数组
     JDMainPageViewController(),
     SHCategoryMainViewController(),
     FinderFrameViewController(),
@@ -56,11 +56,13 @@ class _IndexCategoryDiscoverCartHomeState extends State<IndexCategoryDiscoverCar
     var index = 0;
     content.forEach((element) {
       BottomNavigationBarItem item = BottomNavigationBarItem(
-        // icon: index == currentIndex ? Image.network(element['optlableImage']) : Image.network(element['lableName']),
-        icon: ImageIcon(index == currentIndex ? NetworkImage(element['optlableImage']) : NetworkImage(element['lableName'])),
+        icon: index == currentIndex ? Image.network(element['optlableImage']) : Image.network(element['lableName']),
+        // icon: ImageIcon(index == currentIndex ? NetworkImage(element['optlableImage']) : NetworkImage(element['lableName'])),
         label: element['lableName'],
 
       );
+
+
       index += 1;
       bottomTabs.add(item);
 
@@ -78,11 +80,35 @@ class _IndexCategoryDiscoverCartHomeState extends State<IndexCategoryDiscoverCar
     });
   }
 
+  static Color JDColor(String colorString, {double alpha = 1.0}) {
+    String colorStr = colorString;
+    // colorString未带0xff前缀并且长度为6
+    if (!colorStr.startsWith('0xff') && colorStr.length == 6) {
+      colorStr = '0xff' + colorStr;
+    }
+    // colorString为8位，如0x000000
+    if(colorStr.startsWith('0x') && colorStr.length == 8) {
+      colorStr = colorStr.replaceRange(0, 2, '0xff');
+    }
+    // colorString为7位，如#000000
+    if(colorStr.startsWith('#') && colorStr.length == 7) {
+      colorStr = colorStr.replaceRange(0, 1, '0xff');
+    }
+    // 先分别获取色值的RGB通道
+    Color color = Color(int.parse(colorStr));
+    int red = color.red;
+    int green = color.green;
+    int blue = color.blue;
+    // 通过fromRGBO返回带透明度和RGB值的颜色
+    return Color.fromRGBO(red, green, blue, alpha);
+  }
+
 
 
   @override
   void initState() {
     // currentPage = tabBodies[_currentIndex];//未选择时默认展示页面
+
     super.initState();
   }
 
@@ -90,35 +116,8 @@ class _IndexCategoryDiscoverCartHomeState extends State<IndexCategoryDiscoverCar
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        body: FutureBuilder(
-          future: getBottomTabBarContent(),
-          builder: (context, snapshot) {
-            if(snapshot.hasData) {
-              List<Map> content = _dealWithDataHandler(context, snapshot);
-              return Scaffold(
-                backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
-                bottomNavigationBar: BottomNavigationBar(
-                  // iconSize: 30.0,
-                    unselectedFontSize: 8.0,
-                  unselectedIconTheme: IconThemeData(size: 50.0),
-                  selectedIconTheme:  IconThemeData(size: 50.0),
-                  selectedFontSize: 8.0,
-                  type: BottomNavigationBarType.fixed,
-                  currentIndex: _currentIndex,
-                  items: _setupBottomTabsData(content, _currentIndex),
-                  onTap: onTapHandler,
-
-                ),
-                body: tabBodies[_currentIndex],
-              );
-
-            } else {
-              return Center(
-                 child: Text('加载中...'),
-              );
-            }
-          },
-        )
+        bottomNavigationBar: JDBottomNavigationBar(),
+        body: tabBodies[_currentIndex],
       ),
     );
   }
@@ -127,10 +126,124 @@ class _IndexCategoryDiscoverCartHomeState extends State<IndexCategoryDiscoverCar
 }
 
 
-//
-// class MyBottomNavigationBarItem extends BottomNavigationBarItem {
-//   final Widget icon;
-//   final String label;
-//   final String pageName;
-// }
+class JDBottomNavigationBar extends StatefulWidget {
+@override
+_JDBottomNavigationBarState createState() => _JDBottomNavigationBarState();
+}
 
+class _JDBottomNavigationBarState extends State<JDBottomNavigationBar> {
+  int selectedIndex = 0;
+  Color backgroundColorNav = Colors.black54;
+
+  List<JDBottomNavigationBarItem> items = [
+    JDBottomNavigationBarItem("首页", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("分类", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("发现", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("购物车", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("我的", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+  ];
+
+  static Color JDColor(String colorString, {double alpha = 1.0}) {
+    String colorStr = colorString;
+    // colorString未带0xff前缀并且长度为6
+    if (!colorStr.startsWith('0xff') && colorStr.length == 6) {
+      colorStr = '0xff' + colorStr;
+    }
+    // colorString为8位，如0x000000
+    if(colorStr.startsWith('0x') && colorStr.length == 8) {
+      colorStr = colorStr.replaceRange(0, 2, '0xff');
+    }
+    // colorString为7位，如#000000
+    if(colorStr.startsWith('#') && colorStr.length == 7) {
+      colorStr = colorStr.replaceRange(0, 1, '0xff');
+    }
+    // 先分别获取色值的RGB通道
+    Color color = Color(int.parse(colorStr));
+    int red = color.red;
+    int green = color.green;
+    int blue = color.blue;
+    // 通过fromRGBO返回带透明度和RGB值的颜色
+    return Color.fromRGBO(red, green, blue, alpha);
+  }
+
+  Widget _buildItem(JDBottomNavigationBarItem jdItem, bool isSelected) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 250),
+      padding: EdgeInsets.all(0.0),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.network(isSelected ? jdItem.optlableImage : jdItem.lableImage,
+            fit: BoxFit.cover,
+          ),
+          Positioned(
+              top: 35.0,
+              child:  Text(
+                jdItem.lableName,
+                style: TextStyle(color: isSelected ? JDColor(jdItem.optlabelColor) : JDColor(jdItem.labelColor),fontSize: 12.0),
+              ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int itemIndex;
+    return Container(
+      height: 56,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: items.map((e) => GestureDetector(
+          onTap: (){
+            setState(() {
+              itemIndex = items.indexOf(e);
+              selectedIndex = items.indexOf(e);
+            });
+          },
+          child: _buildItem(e, selectedIndex == items.indexOf(e)),
+        )).toList(),
+      ),
+    );
+  }
+}
+
+
+class JDBottomNavigationBarItem {
+  // final Image icon;
+  final String lableName;
+  final String lableImage;
+  final String optlableImage;
+  final String labelColor;
+  final String optlabelColor;
+
+  JDBottomNavigationBarItem(
+      // this.icon,
+      this.lableName,
+      this.lableImage,
+      this.optlableImage,
+      this.labelColor,
+      this.optlabelColor
+      );
+}
+
+
+class ChangeViewProvider extends InheritedWidget {
+
+  final int currentIndex;
+  final Widget child;
+  const ChangeViewProvider({
+    this.currentIndex,
+    this.child,
+  })  : super(child: child);
+
+  static ChangeViewProvider of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ChangeViewProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(ChangeViewProvider old) {
+    return true;
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:core';
 
 
 class JDBottomNavigationBar extends StatefulWidget {
@@ -9,14 +10,14 @@ class JDBottomNavigationBar extends StatefulWidget {
 
 class _JDBottomNavigationBarState extends State<JDBottomNavigationBar> {
   int selectedIndex = 0;
-  Color backgroundColorNav = Colors.white;
+  Color backgroundColorNav = Colors.black54;
 
   List<JDBottomNavigationBarItem> items = [
-    JDBottomNavigationBarItem("首页", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A");
-    JDBottomNavigationBarItem("分类", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A");
-    JDBottomNavigationBarItem("发现", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A");
-    JDBottomNavigationBarItem("购物车", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A");
-    JDBottomNavigationBarItem("我的", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A");
+    JDBottomNavigationBarItem("首页", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("分类", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("发现", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("购物车", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
+    JDBottomNavigationBarItem("我的", "https://storage.360buyimg.com/mobileskin/ang1601381364121.png", "http://m.360buyimg.com/growthplanet/jfs/t1/130358/1/2751/6432/5ef09386Eeea4ae77/7a50d6f730838034.png", "#2E2D2D", "#E2231A"),
   ];
 
   static Color JDColor(String colorString, {double alpha = 1.0}) {
@@ -45,18 +46,22 @@ class _JDBottomNavigationBarState extends State<JDBottomNavigationBar> {
   Widget _buildItem(JDBottomNavigationBarItem jdItem, bool isSelected) {
     return AnimatedContainer(
         duration: Duration(milliseconds: 250),
-       height: 50,
-      width: 50,
-        padding: EdgeInsets.all(8.0),
-      child: Row(
+        padding: EdgeInsets.all(0.0),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ImageIcon(NetworkImage(isSelected ? jdItem.optlableImage : jdItem.lableImage)),
+          // ImageIcon(NetworkImage(isSelected ? jdItem.optlableImage : jdItem.lableImage),size: 60.0),
+          Image.network(isSelected ? jdItem.optlableImage : jdItem.lableImage,
+              width: 45,
+              height: 45,
+              fit: BoxFit.cover,
+          ),
+
           Padding(
-              padding: EdgeInsets.only(left: 8.0),
+              padding: EdgeInsets.only(top: 0.0),
               child: Text(
                 jdItem.lableName,
-                style: TextStyle(color: isSelected ? JDColor(jdItem.optlabelColor) : JDColor(jdItem.labelColor)),
+                style: TextStyle(color: isSelected ? JDColor(jdItem.optlabelColor) : JDColor(jdItem.labelColor),fontSize: 12.0),
               ),
           )
 
@@ -67,19 +72,20 @@ class _JDBottomNavigationBarState extends State<JDBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    int itemIndex;
     return Container(
-      height: 56,
-      padding: EdgeInsets.only(left: 8, top: 4, bottom: 4, right: 8),
+      height: 67,
+      // padding: EdgeInsets.only(left: 8, top: 4, bottom: 4, right: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: items.map((e) => GestureDetector(
-          var itemIndex = items.indexOf(e);
           onTap: (){
             setState(() {
-              selectedIndex = itemIndex;
+              itemIndex = items.indexOf(e);
+              selectedIndex = items.indexOf(e);
             });
           },
-          child: _buildItem(e, selectedIndex == itemIndex),
+          child: _buildItem(e, selectedIndex == items.indexOf(e)),
         )).toList(),
       ),
     );
