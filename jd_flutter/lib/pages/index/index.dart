@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../view/JDMainPageTab.dart';
+import '../../http/jd_http_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../cart/index.dart';
 import '../category/index.dart';
 import '../discover/index.dart';
 import '../home/index.dart';
+import 'JDMainPageViewController.dart';
 
 
 List<JDTabViewModel> modelList = [
-  JDTabViewModel(title: '首页',widget: FinderFrameViewController()),
+  JDTabViewModel(title: '首页',widget: JDMainPageViewController()),
   JDTabViewModel(title: '图书',widget: MyJdHomeViewController()),
   JDTabViewModel(title: '美妆',widget: SCShopCartViewController()),
   JDTabViewModel(title: '母婴童装',widget: SHCategoryMainViewController()),
@@ -22,19 +25,21 @@ List<JDTabViewModel> modelList = [
   JDTabViewModel(title: '内衣配饰',widget: SHCategoryMainViewController()),
 ];
 
-class JDMainPageViewController extends StatefulWidget {
+class HomeIndex extends StatefulWidget {
   @override
-  _JDMainPageViewControllerState createState() => _JDMainPageViewControllerState();
+  _HomeIndexState createState() => _HomeIndexState();
 }
 
-class _JDMainPageViewControllerState extends State<JDMainPageViewController> with SingleTickerProviderStateMixin{
+class _HomeIndexState extends State<HomeIndex> with SingleTickerProviderStateMixin{
   TabController tabController;
 
   @override
   void initState() {
-    this.tabController = TabController(length: modelList.length, vsync: this);
     super.initState();
+    this.tabController = TabController(length: modelList.length, vsync: this);
+
   }
+
 
   @override
   void dispose() {
@@ -51,4 +56,3 @@ class _JDMainPageViewControllerState extends State<JDMainPageViewController> wit
     );
   }
 }
-

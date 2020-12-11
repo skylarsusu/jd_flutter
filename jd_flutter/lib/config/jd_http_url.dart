@@ -4,5 +4,5 @@ const  baseUrl = 'http://localhost/';
 
 const servicePath = {
   "bottomBar" : baseUrl + "bottomBar/bottonTab.json",//底部tabBar按钮
-  "homeContent" : baseUrl + "Index",
+  "homeContent" : baseUrl + "index/index.json",
 };

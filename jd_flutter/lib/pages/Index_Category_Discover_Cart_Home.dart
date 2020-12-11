@@ -13,6 +13,7 @@ import 'discover//index.dart';
 import 'home/index.dart';
 
 
+
 class IndexCategoryDiscoverCartHome extends StatefulWidget {
   @override
   _IndexCategoryDiscoverCartHomeState createState() => _IndexCategoryDiscoverCartHomeState();
@@ -31,7 +32,7 @@ class _IndexCategoryDiscoverCartHomeState extends State<IndexCategoryDiscoverCar
   ];
 
   final List<Widget> tabBodies = [//要跳转的页面数组
-    JDMainPageViewController(),
+    HomeIndex(),
     SHCategoryMainViewController(),
     FinderFrameViewController(),
     SCShopCartViewController(),
