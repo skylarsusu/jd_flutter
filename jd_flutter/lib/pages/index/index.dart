@@ -8,6 +8,7 @@ import '../category/index.dart';
 import '../discover/index.dart';
 import '../home/index.dart';
 import 'JDMainPageViewController.dart';
+import '../../JDCostomWebView.dart';
 
 
 List<JDTabViewModel> modelList = [
@@ -31,14 +32,90 @@ class HomeIndex extends StatefulWidget {
 }
 
 class _HomeIndexState extends State<HomeIndex> with SingleTickerProviderStateMixin{
+  bool isLoading = true;
   TabController tabController;
+
+  List<JDTabViewModel> tabList = [];
+  JDCustomModel searchModel;
+  JDCustomModel floatModel ;
+  JDCustomModel topRotateModel ;
+
 
   @override
   void initState() {
     super.initState();
     this.tabController = TabController(length: modelList.length, vsync: this);
 
+    getHomeTabBarContent().then((value) {
+      List floorList = value['floorList'];
+      List<JDTabViewModel> topTabList = List();//topTab数组
+      String jumpUrl;
+      Widget showImg;
+
+      String floatJumpUrl;
+      Widget floatShowImg;
+
+      String topRotateJumpUrl;
+      Widget topRotateImg;
+
+
+      JDCustomModel _floatModel ;
+
+      floorList.forEach((element) {
+
+        if(element['type'] == 'topRotate'){
+          var content = element['content'];
+          List subFloors = content['subFloors'];
+          var map = subFloors[0];
+          List data = map['data'];
+          var topRotate = data[0];
+          topRotateImg = CachedNetworkImage(imageUrl: topRotate['img']);
+
+          var jump = topRotate['jump'];
+          var params = jump['params'];
+          topRotateJumpUrl = params['url'];
+
+        }
+        if(element['type'] == 'float'){
+          floatShowImg = CachedNetworkImage(imageUrl: element['img']);
+          var jump = element['jump'];
+          var params = jump['params'];
+          floatJumpUrl = params['url'];
+
+        }
+
+        if(element['type'] == 'searchIcon'){
+          showImg = CachedNetworkImage(imageUrl: element['img']);
+          var jump = element['jump'];
+          var params = jump['params'];
+          jumpUrl = params['url'];
+
+        }
+
+        if(element['type'] == 'topTab'){
+          List content = element['content'];
+          content.forEach((element) {
+            String title =  element['cName'];
+
+            JDTabViewModel model = JDTabViewModel(title: element['cName'], widget: MyJdHomeViewController());
+            topTabList.add(model);
+
+          });
+        }
+
+      });
+      // response = value.toString();
+      // print('response: $response');
+      setState(() {
+        tabList = topTabList;
+        searchModel = JDCustomModel(jumpUrl: jumpUrl, showImg: showImg);
+        floatModel = JDCustomModel(jumpUrl: floatJumpUrl, showImg: floatShowImg);
+        topRotateModel = JDCustomModel(jumpUrl: topRotateJumpUrl, showImg: topRotateImg);
+        isLoading = false;
+      });
+    });
   }
+
 
 
   @override
@@ -49,10 +126,110 @@ class _HomeIndexState extends State<HomeIndex> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+
+    double _top = 0;
+
+    if(isLoading) {
+      return Center(
+        child: SizedBox(
+          width: 24.0,
+          height: 24.0,
+          child: CircularProgressIndicator(strokeWidth: 2.0,),
+        ),
+      );
+    } else {
+      return Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage('https://m.360buyimg.com/mobilecms/s1125x939_jfs/t1/138597/37/17558/80205/5fd0426cE6e553ab8/5df1ebbb6361a1ca.png'),
+              fit: BoxFit.cover,
+            )
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            actions: [
+              IconButton(icon: Icon(Icons.search), onPressed: (){
+
+              }),
+              IconButton(icon: searchModel.showImg, onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return JDCustomWebview(title: '北京消费券',url: searchModel.jumpUrl);
+                }));
+
+              })
+            ],
+            leading: Container(
+              width: MediaQuery.of(context).size.width/2,
+              height: 24,
+              padding: EdgeInsets.only(left: 10.0),
+              alignment: Alignment.centerLeft,
+              child: topRotateModel.showImg,
+            ),
+            // bottom: TabBar(
+            //   controller: this.tabController,
+            //   isScrollable: true,
+            //   tabs: modelList.map((e) => Text(e.title, style: TextStyle(fontSize: 20), )).toList(),
+            // ),
+
+          ),
+
+          body: TabBarView(
+            controller: this.tabController,
+            children: modelList.map((e) => e.widget).toList(),
+          ),
+
+          floatingActionButton: Stack(
+
+            children: [
+              Positioned(
+                width: 100.0,
+                height: 100.0,
+                bottom: _top,
+                right: 0.0,
+                child: GestureDetector(
+                  child: floatModel.showImg,
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return JDCustomWebview(title: '北京消费券',url: floatModel.jumpUrl);
+                    }));
+                  },
+                  onPanUpdate: (DragUpdateDetails e){
+                    setState(() {
+                      _top += e.delta.dy;
+                    });
+                  },
+                  onPanEnd: (detail){
+                    print('top: $_top');
+                  },
+
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
+
+
     return JDPageTab(
       title: '首页',
       models: modelList,
       tabController: this.tabController,
     );
   }
+}
+
+
+class JDCustomModel {
+  final String jumpUrl;
+  final Widget showImg;
+
+  const JDCustomModel({
+    this.jumpUrl,
+    this.showImg,
+  });
 }
