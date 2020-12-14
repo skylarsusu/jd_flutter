@@ -145,6 +145,107 @@ class _HomeIndexState extends State<HomeIndex> with SingleTickerProviderStateMix
               fit: BoxFit.cover,
             )
         ),
+        // child: Scaffold(
+        //   backgroundColor: Colors.transparent,
+        //   body: CustomScrollView(
+        //     slivers: [
+        //       SliverAppBar(
+        //         backgroundColor: Colors.transparent,
+        //
+        //         // floating: true,
+        //         pinned: true,
+        //         // snap: true,
+        //         expandedHeight: 48,
+        //         // flexibleSpace: FlexibleSpaceBar(
+        //         //   background: CachedNetworkImage(
+        //         //     imageUrl: 'https://m.360buyimg.com/mobilecms/s1125x939_jfs/t1/138597/37/17558/80205/5fd0426cE6e553ab8/5df1ebbb6361a1ca.png',
+        //         //     fit: BoxFit.cover,
+        //         //   ),
+        //         // ),
+        //         elevation: 0.0,
+        //         actions: [
+        //           IconButton(icon: Icon(Icons.search), onPressed: (){
+        //
+        //           }),
+        //           IconButton(icon: searchModel.showImg, onPressed: () {
+        //             Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //               return JDCustomWebview(title: '北京消费券',url: searchModel.jumpUrl);
+        //             }));
+        //
+        //           })
+        //         ],
+        //         // bottom: TabBar(
+        //         //   tabs: modelList.map((e) => Text(e.title, style: TextStyle(fontSize: 20), )).toList(),
+        //         //
+        //         //   controller: this.tabController,
+        //         //   isScrollable: true,
+        //         //   onTap: (index) {
+        //         //     print('index: $index');
+        //         //     // Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //         //     //   return modelList[index].widget;
+        //         //     // }));
+        //         //   },
+        //         // ),
+        //       ),
+        //       SliverFixedExtentList(
+        //           delegate: SliverChildBuilderDelegate(
+        //               (context, index) {
+        //                 final isOdd = index % 2 == 1;
+        //                 return Container(
+        //
+        //                   padding: EdgeInsets.only(left: 10.0, right: 10.0),
+        //                   alignment: Alignment.center,
+        //                   color: Colors.transparent,
+        //
+        //                   child: Column(
+        //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //                     children: [
+        //                       TabBar(
+        //                         tabs: modelList.map((e) => Text(e.title, style: TextStyle(fontSize: 20), )).toList(),
+        //
+        //                         controller: this.tabController,
+        //                         isScrollable: true,
+        //                         onTap: (index) {
+        //                           print('index: $index');
+        //
+        //                           // Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //                           //   return modelList[index].widget;
+        //                           // }));
+        //                         },
+        //                       ),
+        //                       TabBarView(
+        //                           // children: [
+        //                           //   JDMainPageViewController(),
+        //                           // ],
+        //                             controller: this.tabController,
+        //                             children: modelList.map((e) => e.widget).toList(),
+        //                       ),
+        //                       Text(
+        //                         index.toString(),
+        //                         style: TextStyle(
+        //                           fontSize: 30,
+        //                           fontWeight: FontWeight.w500,
+        //                           color: Colors.black,
+        //                         ),
+        //                       ),
+        //                     ],
+        //                   )
+        //                   // Text(
+        //                   //   index.toString(),
+        //                   //   style: TextStyle(
+        //                   //     fontSize: 30,
+        //                   //     fontWeight: FontWeight.w500,
+        //                   //     color: Colors.black,
+        //                   //   ),
+        //                   // ),
+        //                 );
+        //               },childCount: 1,
+        //           ),
+        //           itemExtent: 80,
+        //       ),
+        //     ],
+        //   ),
+        // ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -168,11 +269,11 @@ class _HomeIndexState extends State<HomeIndex> with SingleTickerProviderStateMix
               alignment: Alignment.centerLeft,
               child: topRotateModel.showImg,
             ),
-            // bottom: TabBar(
-            //   controller: this.tabController,
-            //   isScrollable: true,
-            //   tabs: modelList.map((e) => Text(e.title, style: TextStyle(fontSize: 20), )).toList(),
-            // ),
+            bottom: TabBar(
+              controller: this.tabController,
+              isScrollable: true,
+              tabs: modelList.map((e) => Text(e.title, style: TextStyle(fontSize: 20), )).toList(),
+            ),
 
           ),
 

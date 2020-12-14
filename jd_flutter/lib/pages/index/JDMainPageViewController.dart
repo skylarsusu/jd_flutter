@@ -11,6 +11,11 @@ import '../../config/jd_color_util.dart';
 import 'JDScrollableItem.dart';
 import '../../view/JDMainPageTab.dart';
 
+import '../cart/index.dart';
+import '../category/index.dart';
+import '../discover/index.dart';
+import '../home/index.dart';
+
 class JDMainPageViewController extends StatefulWidget {
   @override
   _JDMainPageViewControllerState createState() => _JDMainPageViewControllerState();
@@ -19,12 +24,15 @@ class JDMainPageViewController extends StatefulWidget {
 class _JDMainPageViewControllerState extends State<JDMainPageViewController> with SingleTickerProviderStateMixin {
   bool isLoading = true;
   String response = '正在加载';
+  TabController tabController;
+
 
   List banner, topTab, appcenter, hybrid, scrollList = [];
 
   @override
   void initState() {
     super.initState();
+    this.tabController = TabController(length: modelList.length, vsync: this);
     getHomeTabBarContent().then((value) {
         List floorList = value['floorList'];
         List<Widget> bannerList = List();//banner数组
@@ -159,6 +167,8 @@ class _JDMainPageViewControllerState extends State<JDMainPageViewController> wit
     });
   }
 
+
+
   SliverList buildJDTabBar() {
     return SliverList(
         delegate: SliverChildBuilderDelegate((BuildContext context, int index){
@@ -258,6 +268,13 @@ class _JDMainPageViewControllerState extends State<JDMainPageViewController> wit
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    this.tabController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     if(isLoading) {
       return Center(
@@ -269,6 +286,7 @@ class _JDMainPageViewControllerState extends State<JDMainPageViewController> wit
       );
     } else {
       var sliverList = [
+        // buildJDTabBar(),
         buildSwiper(),
         buildHybridView(),
         buildCenterSwiper(),
